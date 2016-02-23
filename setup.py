@@ -31,7 +31,7 @@ setup(
         'aria-plugins-common==0.3',
         'aria-dsl-parser==0.3',
         'pyyaml==3.10',
-        'argcomplete==0.7.1',
         'jinja2==2.7.2',
+        'virtualenv-api',
     ]
 )
