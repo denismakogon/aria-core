@@ -1,0 +1,7 @@
+hacking
+coverage==3.7.1 # this fixes issue with tox installing coverage --pre
+nose
+nose-cov
+testfixtures
+mock>=1.0.1
+sphinx-argparse
