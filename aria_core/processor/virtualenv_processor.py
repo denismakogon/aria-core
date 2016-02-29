@@ -23,6 +23,7 @@ from aria_core import exceptions as aria_exceptions
 from aria_core import logger
 from aria_core import logger_config
 from aria_core import utils
+
 from aria_core.dependencies import futures
 from aria_core.processor import blueprint_processor
 
@@ -33,11 +34,13 @@ def initialize_blueprint(blueprint_path,
                          blueprint_id,
                          storage,
                          install_plugins=False,
-                         inputs=None):
+                         inputs=None,
+                         storage_path=None):
 
     venv_path = install_blueprint_plugins(
         blueprint_id, blueprint_path,
-        install_plugins=install_plugins)
+        install_plugins=install_plugins,
+        storage_path=storage_path)
     provider_context = (
         logger_config.AriaConfig().local_provider_context)
     inputs = utils.inputs_to_dict(inputs, 'inputs')
@@ -56,12 +59,13 @@ def initialize_blueprint(blueprint_path,
 
 def install_blueprint_plugins(blueprint_id, blueprint_path,
                               install_plugins=False,
-                              default_python_interpreter='python2.7'):
+                              default_python_interpreter='python2.7',
+                              storage_path=None):
     requirements = blueprint_processor.create_requirements(blueprint_path)
     if install_plugins:
         if requirements:
-            venv_path = os.path.join(utils.get_cwd(),
-                                     '.venv_{0}'.format(blueprint_id))
+            venv_path = os.path.join(utils.storage_dir(
+                blueprint_id, storage_path=storage_path), '.venv')
             venv = manage.VirtualEnvironment(
                 venv_path, python=default_python_interpreter)
             venv.open_or_create()

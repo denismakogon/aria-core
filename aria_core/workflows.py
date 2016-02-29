@@ -15,6 +15,8 @@
 import sys
 import os
 
+from aria_core import utils
+
 
 def generic_execute(blueprint_id=None,
                     workflow_id=None,
@@ -23,12 +25,12 @@ def generic_execute(blueprint_id=None,
                     task_retries=None,
                     task_retry_interval=None,
                     environment=None,
-                    default_python_interpreter='python2.7'):
-    venv_path = os.path.join(os.getcwd(),
-                             '.venv_{0}'.format(blueprint_id),
-                             'lib',
-                             default_python_interpreter,
-                             'site-packages')
+                    default_python_interpreter='python2.7',
+                    storage_path=None):
+    venv_path = os.path.join(utils.storage_dir(
+        blueprint_id, storage_path=storage_path),
+        '.venv_{0}'.format(blueprint_id),
+        'lib', default_python_interpreter, 'site-packages')
     sys.path.append(venv_path)
     result = environment.execute(
         workflow=workflow_id,

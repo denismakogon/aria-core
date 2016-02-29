@@ -41,9 +41,10 @@ def validate(blueprint_path):
         raise Exception("Failed to validate blueprint. %s", str(e))
 
 
-def init_blueprint_storage(blueprint_id):
+def init_blueprint_storage(blueprint_id, storage_path=None):
     return futures.aria_local.FileStorage(
-        storage_dir=utils.storage_dir(blueprint_id))
+        storage_dir=utils.storage_dir(blueprint_id,
+                                      storage_path=storage_path))
 
 
 def with_blueprint_storage(action):
@@ -64,10 +65,11 @@ def coroutine(generator_func):
     return coroutine_wrapper
 
 
-def load_blueprint_storage_env(blueprint_id):
+def load_blueprint_storage_env(blueprint_id, storage_path=None):
     return futures.aria_local.load_env(
         name=blueprint_id,
-        storage=init_blueprint_storage(blueprint_id))
+        storage=init_blueprint_storage(blueprint_id,
+                                       storage_path=storage_path))
 
 
 @coroutine
