@@ -53,7 +53,7 @@ class BlueprintsAPI(object):
         :return:
         """
         try:
-            blueprints.initialize_blueprint(
+            return blueprints.initialize_blueprint(
                 blueprint_path,
                 blueprint_id,
                 blueprints.init_blueprint_storage(
@@ -103,7 +103,7 @@ class ExecutionsAPI(object):
                 storage_path=None):
         environment = blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=storage_path)
-        workflows.install(
+        return workflows.install(
             parameters=parameters,
             allow_custom_parameters=allow_custom_parameters,
             task_retries=task_retries,
@@ -119,7 +119,7 @@ class ExecutionsAPI(object):
                   storage_path=None):
         environment = blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=storage_path)
-        workflows.uninstall(
+        return workflows.uninstall(
             parameters=parameters,
             allow_custom_parameters=allow_custom_parameters,
             task_retries=task_retries,
@@ -136,7 +136,7 @@ class ExecutionsAPI(object):
                        storage_path=None):
         environment = blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=storage_path)
-        workflows.generic_execute(
+        return workflows.generic_execute(
             blueprint_id=blueprint_id,
             workflow_id=workflow_id,
             parameters=parameters,
