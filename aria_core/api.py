@@ -63,7 +63,7 @@ class BlueprintsAPI(object):
                 install_plugins=install_plugins,
                 storage_path=self._storage_path,
             )
-        except (Exception, ImportError) as e:
+        except BaseException as e:
             LOG.exception(str(e))
             raise e
 

@@ -64,8 +64,8 @@ def install_blueprint_plugins(blueprint_id, blueprint_path,
     requirements = blueprint_processor.create_requirements(blueprint_path)
     if install_plugins:
         if requirements:
-            venv_path = os.path.join(utils.storage_dir(
-                blueprint_id, storage_path=storage_path), '.venv')
+            venv_path = utils.venv_path(blueprint_id,
+                                        storage_path=storage_path)
             venv = manage.VirtualEnvironment(
                 venv_path, python=default_python_interpreter)
             venv.open_or_create()
