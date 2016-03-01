@@ -27,10 +27,11 @@ def generic_execute(blueprint_id=None,
                     environment=None,
                     default_python_interpreter='python2.7',
                     storage_path=None):
-    venv_path = os.path.join(utils.storage_dir(
-        blueprint_id, storage_path=storage_path),
-        '.venv_{0}'.format(blueprint_id),
-        'lib', default_python_interpreter, 'site-packages')
+    root_venv_path = utils.venv_path(blueprint_id,
+                                     storage_path=storage_path)
+    venv_path = os.path.join(root_venv_path, 'lib',
+                             default_python_interpreter,
+                             'site-packages')
     sys.path.append(venv_path)
     result = environment.execute(
         workflow=workflow_id,

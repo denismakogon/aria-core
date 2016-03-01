@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
 import json
 
 from aria_core import exceptions
@@ -42,9 +43,12 @@ def validate(blueprint_path):
 
 
 def init_blueprint_storage(blueprint_id, storage_path=None):
+    _env_path = utils.storage_dir(blueprint_id,
+                                  storage_path=storage_path)
+    if not os.path.exists(_env_path):
+        os.makedirs(_env_path)
     return futures.aria_local.FileStorage(
-        storage_dir=utils.storage_dir(blueprint_id,
-                                      storage_path=storage_path))
+        storage_dir=_env_path)
 
 
 def with_blueprint_storage(action):
