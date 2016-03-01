@@ -264,7 +264,8 @@ def delete_aria_working_dir_settings():
         os.remove(target_file_path)
 
 
-def storage_dir(blueprint_id):
-    return os.path.join(os.getcwd(),
-                        STORAGE_DIR_NAME,
-                        blueprint_id)
+def storage_dir(blueprint_id, storage_path=None):
+    parts = ([os.getcwd(), STORAGE_DIR_NAME, blueprint_id]
+             if not storage_path else
+             [storage_path, blueprint_id])
+    return os.path.join(*parts)
