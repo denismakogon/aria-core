@@ -72,6 +72,22 @@ class BlueprintsAPI(object):
             blueprint_id, storage_path=self._storage_path)
         shutil.rmtree(blueprint_storage, ignore_errors=True)
 
+    def load_blueprint_storage(self, blueprint_id, storage_path=None):
+        return blueprints.load_blueprint_storage_env(
+            blueprint_id, storage_path=storage_path)
+
+    def outputs(self, blueprint_id):
+        return blueprints.outputs(
+            blueprint_id, storage_path=self._storage_path)
+
+    def instances(self, blueprint_id, node_id=None):
+        return blueprints.instances(blueprint_id,
+                                    node_id=node_id,
+                                    storage_path=self._storage_path)
+
+    def create_requirements(self, blueprint_path):
+        return blueprints.create_requirements(blueprint_path)
+
 
 class ExecutionsAPI(object):
 
