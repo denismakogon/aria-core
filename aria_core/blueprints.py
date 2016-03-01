@@ -51,7 +51,9 @@ def with_blueprint_storage(action):
 
     def with_blueprint_storage_wrapper(*args, **kwargs):
         b_id = args[0]
-        env = load_blueprint_storage_env(b_id)
+        storage_path = kwargs.get('storage_path')
+        env = load_blueprint_storage_env(
+            b_id, storage_path=storage_path)
         yield action(env, **kwargs)
 
     return with_blueprint_storage_wrapper
