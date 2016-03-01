@@ -84,8 +84,10 @@ def outputs(env):
 
 @coroutine
 @with_blueprint_storage
-def instances(env, node_id=None):
-    node_instances = env.storage.get_node_instances(node_id=node_id)
+def instances(env, **kwargs):
+    node_id = kwargs.get('node_id')
+    node_instances = env.storage.get_node_instances(
+        node_id=node_id)
     if not node_instances:
         raise exceptions.AriaError('No node with id: {0}'
                                    .format(node_id))
