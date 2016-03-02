@@ -1,4 +1,5 @@
 hacking
+testtools
 coverage==3.7.1 # this fixes issue with tox installing coverage --pre
 nose
 nose-cov
