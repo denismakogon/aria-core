@@ -33,5 +33,6 @@ setup(
         'pyyaml==3.10',
         'jinja2==2.7.2',
         'virtualenv-api',
+        'aria-script-plugin'  # Legacy dependency
     ]
 )
