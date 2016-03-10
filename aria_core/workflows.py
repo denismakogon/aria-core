@@ -43,12 +43,14 @@ def generic_execute(blueprint_id=None,
     return result
 
 
-def install(parameters=None,
+def install(blueprint_id,
+            parameters=None,
             allow_custom_parameters=None,
             task_retries=None,
             task_retry_interval=None,
             environment=None):
-    return generic_execute(workflow_id='install',
+    return generic_execute(blueprint_id=blueprint_id,
+                           workflow_id='install',
                            parameters=parameters,
                            allow_custom_parameters=allow_custom_parameters,
                            task_retries=task_retries,
@@ -56,12 +58,14 @@ def install(parameters=None,
                            environment=environment)
 
 
-def uninstall(parameters=None,
+def uninstall(blueprint_id,
+              parameters=None,
               allow_custom_parameters=None,
               task_retries=None,
               task_retry_interval=None,
               environment=None):
-    return generic_execute(workflow_id='uninstall',
+    return generic_execute(blueprint_id=blueprint_id,
+                           workflow_id='uninstall',
                            parameters=parameters,
                            allow_custom_parameters=allow_custom_parameters,
                            task_retries=task_retries,

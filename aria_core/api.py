@@ -53,12 +53,12 @@ class BlueprintsAPI(object):
         :return:
         """
         try:
+            blueprint_storage = blueprints.init_blueprint_storage(
+                blueprint_id, storage_path=self._storage_path)
             return blueprints.initialize_blueprint(
                 blueprint_path,
                 blueprint_id,
-                blueprints.init_blueprint_storage(
-                    blueprint_id,
-                    storage_path=self._storage_path),
+                blueprint_storage,
                 inputs=inputs,
                 install_plugins=install_plugins,
                 storage_path=self._storage_path,
@@ -72,9 +72,9 @@ class BlueprintsAPI(object):
             blueprint_id, storage_path=self._storage_path)
         shutil.rmtree(blueprint_storage, ignore_errors=True)
 
-    def load_blueprint_storage(self, blueprint_id, storage_path=None):
+    def load_blueprint_storage(self, blueprint_id):
         return blueprints.load_blueprint_storage_env(
-            blueprint_id, storage_path=storage_path)
+            blueprint_id, storage_path=self._storage_path)
 
     def outputs(self, blueprint_id):
         return blueprints.outputs(
@@ -99,11 +99,11 @@ class ExecutionsAPI(object):
                 parameters=None,
                 allow_custom_parameters=None,
                 task_retries=None,
-                task_retry_interval=None,
-                storage_path=None):
+                task_retry_interval=None):
         environment = blueprints.load_blueprint_storage_env(
-            blueprint_id, storage_path=storage_path)
+            blueprint_id, storage_path=self._storage_path)
         return workflows.install(
+            blueprint_id,
             parameters=parameters,
             allow_custom_parameters=allow_custom_parameters,
             task_retries=task_retries,
@@ -115,11 +115,11 @@ class ExecutionsAPI(object):
                   parameters=None,
                   allow_custom_parameters=None,
                   task_retries=None,
-                  task_retry_interval=None,
-                  storage_path=None):
+                  task_retry_interval=None):
         environment = blueprints.load_blueprint_storage_env(
-            blueprint_id, storage_path=storage_path)
+            blueprint_id, storage_path=self._storage_path)
         return workflows.uninstall(
+            blueprint_id,
             parameters=parameters,
             allow_custom_parameters=allow_custom_parameters,
             task_retries=task_retries,
@@ -132,10 +132,9 @@ class ExecutionsAPI(object):
                        parameters=None,
                        allow_custom_parameters=None,
                        task_retries=None,
-                       task_retry_interval=None,
-                       storage_path=None):
+                       task_retry_interval=None):
         environment = blueprints.load_blueprint_storage_env(
-            blueprint_id, storage_path=storage_path)
+            blueprint_id, storage_path=self._storage_path)
         return workflows.generic_execute(
             blueprint_id=blueprint_id,
             workflow_id=workflow_id,

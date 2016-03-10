@@ -12,20 +12,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import tempfile
-import shutil
-
 from aria_core import api as aria_core_api
 
 
 def with_aria_core_api(action):
     def wrap(*args, **kwargs):
-        aria_core_storage = tempfile.mkdtemp(
-                prefix='aria_storage_dir')
         api = aria_core_api.AriaCoreAPI(
-            aria_core_storage)
+            storage_path=None)
         action(api, *args, **kwargs)
-        shutil.rmtree(aria_core_storage, ignore_errors=True)
     return wrap
 
 
@@ -43,11 +37,58 @@ def init_blueprint(*args, **kwargs):
                               inputs=kwargs.get('inputs'),
                               install_plugins=kwargs.get(
                                   'install_plugins', False))
+
+
+@with_aria_core_api
+def teardown_blueprint(*args, **kwargs):
+    api, blueprint_id = args
     api.blueprints.teardown(blueprint_id)
 
 
+@with_aria_core_api
+def install(*args, **kwargs):
+    api, blueprint_id = args
+    (parameters, allow_custom_parameters,
+     task_retries, task_retry_interval) = (kwargs.get('parameters'),
+                                           kwargs.get('allow_custom_parameters'),
+                                           kwargs.get('task_retries', 10),
+                                           kwargs.get('task_retry_interval', 10))
+    api.executions.install(blueprint_id,
+                           parameters=parameters,
+                           allow_custom_parameters=allow_custom_parameters,
+                           task_retries=task_retries,
+                           task_retry_interval=task_retry_interval)
+
+
+@with_aria_core_api
+def outputs(*args, **kwargs):
+    api, blueprint_id = args
+    print(api.blueprints.outputs(blueprint_id))
+
+
+@with_aria_core_api
+def uninstall(*args, **kwargs):
+    api, blueprint_id = args
+    (parameters, allow_custom_parameters,
+     task_retries, task_retry_interval) = (kwargs.get('parameters'),
+                                           kwargs.get('allow_custom_parameters'),
+                                           kwargs.get('task_retries', 10),
+                                           kwargs.get('task_retry_interval', 10))
+    api.executions.uninstall(blueprint_id,
+                             parameters=parameters,
+                             allow_custom_parameters=allow_custom_parameters,
+                             task_retries=task_retries,
+                             task_retry_interval=task_retry_interval)
+
+
 if __name__ == "__main__":
-    print("Input existing blueprint path")
-    _blueprint_path = raw_input()
+
+    blueprint_id = raw_input("Input blueprint ID:")
+    _blueprint_path = raw_input("Input existing blueprint path:")
+    inputs_path = raw_input("Input path to a deployment inputs:")
     validate_blueprint(_blueprint_path)
-    init_blueprint('blueprint_id', _blueprint_path, install_plugins=True)
+    init_blueprint(blueprint_id, _blueprint_path, inputs=inputs_path, install_plugins=True)
+    install(blueprint_id)
+    outputs(blueprint_id)
+    uninstall(blueprint_id)
+    teardown_blueprint(blueprint_id)
