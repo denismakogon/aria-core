@@ -17,8 +17,7 @@ from aria_core import api as aria_core_api
 
 def with_aria_core_api(action):
     def wrap(*args, **kwargs):
-        api = aria_core_api.AriaCoreAPI(
-            storage_path=None)
+        api = aria_core_api.AriaCoreAPI()
         action(api, *args, **kwargs)
     return wrap
 

@@ -13,7 +13,6 @@
 #    under the License.
 
 import os
-import json
 
 from aria_core import exceptions
 from aria_core import logger
@@ -81,9 +80,7 @@ def load_blueprint_storage_env(blueprint_id, storage_path=None):
 @coroutine
 @with_blueprint_storage
 def outputs(env, **kwargs):
-    _outputs = json.dumps(env.outputs() or {},
-                          sort_keys=True, indent=2)
-    return _outputs
+    return env.outputs()
 
 
 @coroutine
