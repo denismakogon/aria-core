@@ -26,31 +26,38 @@ LOG = logger.get_logger(__name__)
 
 class BlueprintsAPI(object):
 
-    def __init__(self, storage_path):
+    def __init__(self, storage_path=None):
         self._storage_path = storage_path
 
     def validate(self, blueprint_path):
         """
-        Validates a blueprint using Aria DSL parser API
-        :param blueprint_path: path to a blueprint
-        :type blueprint_path: str
-        :return: None
+        Validate blueprint in order to be a valid TOSCA template
+        Parameters
+        ----------
+        blueprint_path: str
+
+        Returns
+        -------
+        blueprint_plan: dict
+
         """
         return blueprints.validate(blueprint_path)
 
     def initialize(self, blueprint_id, blueprint_path,
                    inputs=None, install_plugins=False):
         """
-        Initialized a blueprint
-        :param blueprint_id: Blueprint ID
-        :type blueprint_id: str
-        :param blueprint_path: Blueprint path
-        :type blueprint_path: str
-        :param inputs: Blueprint deployment inputs
-        :type inputs: dict
-        :param install_plugins: if necessary to install blueprint plugins
-        :type install_plugins: bool
-        :return:
+        Initializes blueprint storage and install its plugins if needed
+        Parameters
+        ----------
+        blueprint_id: str
+        blueprint_path: str
+        inputs: str
+        install_plugins: bool
+
+        Returns
+        -------
+        blueprint_storage: FileStorage
+
         """
         try:
             blueprint_storage = blueprints.init_blueprint_storage(
@@ -68,30 +75,81 @@ class BlueprintsAPI(object):
             raise e
 
     def teardown(self, blueprint_id):
+        """
+        Destroys blueprint storage once it is not needed
+        Parameters
+        ----------
+        blueprint_id: str
+
+        Returns
+        -------
+
+        """
         blueprint_storage = utils.storage_dir(
             blueprint_id, storage_path=self._storage_path)
         shutil.rmtree(blueprint_storage, ignore_errors=True)
 
     def load_blueprint_storage(self, blueprint_id):
+        """
+        Loads blueprint storage object
+        Parameters
+        ----------
+        blueprint_id: str
+
+        Returns
+        -------
+        blueprint_storage: FileStorage
+        """
         return blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=self._storage_path)
 
     def outputs(self, blueprint_id):
+        """
+        Retrieves outputs of a deployment
+        Parameters
+        ----------
+        blueprint_id: str
+
+        Returns
+        -------
+        outputs: dict
+        """
         return blueprints.outputs(
             blueprint_id, storage_path=self._storage_path)
 
     def instances(self, blueprint_id, node_id=None):
+        """
+        Retrieves instances of a deployment
+        Parameters
+        ----------
+        blueprint_id: str
+        node_id: str
+        Returns
+        -------
+        instances: dict
+        """
         return blueprints.instances(blueprint_id,
                                     node_id=node_id,
                                     storage_path=self._storage_path)
 
     def create_requirements(self, blueprint_path):
+        """
+        Creates blueprint plugin dependencies
+        Parameters
+        ----------
+        blueprint_path: str
+
+        Returns
+        -------
+        requirements: set
+
+        """
         return blueprints.create_requirements(blueprint_path)
 
 
 class ExecutionsAPI(object):
 
-    def __init__(self, storage_path):
+    def __init__(self, storage_path=None):
         self._storage_path = storage_path
 
     def install(self,
@@ -100,6 +158,20 @@ class ExecutionsAPI(object):
                 allow_custom_parameters=None,
                 task_retries=None,
                 task_retry_interval=None):
+        """
+        Starts install workflow for a blueprint deployment
+        Parameters
+        ----------
+        blueprint_id: str
+        parameters: dict
+        allow_custom_parameters: bool
+        task_retries: int
+        task_retry_interval: int
+
+        Returns
+        -------
+
+        """
         environment = blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=self._storage_path)
         return workflows.install(
@@ -116,6 +188,20 @@ class ExecutionsAPI(object):
                   allow_custom_parameters=None,
                   task_retries=None,
                   task_retry_interval=None):
+        """
+        Starts uninstall workflow for a blueprint deployment
+        Parameters
+        ----------
+        blueprint_id: str
+        parameters: dict
+        allow_custom_parameters: bool
+        task_retries: int
+        task_retry_interval: int
+
+        Returns
+        -------
+
+        """
         environment = blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=self._storage_path)
         return workflows.uninstall(
@@ -133,6 +219,20 @@ class ExecutionsAPI(object):
                        allow_custom_parameters=None,
                        task_retries=None,
                        task_retry_interval=None):
+        """
+        Starts generic workflow for a blueprint deployment
+        Parameters
+        ----------
+        blueprint_id: str
+        parameters: dict
+        allow_custom_parameters: bool
+        task_retries: int
+        task_retry_interval: int
+
+        Returns
+        -------
+
+        """
         environment = blueprints.load_blueprint_storage_env(
             blueprint_id, storage_path=self._storage_path)
         return workflows.generic_execute(
@@ -154,8 +254,8 @@ class AriaCoreAPI(object):
         :return: None
         """
         self._storage_path = storage_path
-        self.blueprints = BlueprintsAPI(storage_path)
-        self.executions = ExecutionsAPI(storage_path)
+        self.blueprints = BlueprintsAPI()
+        self.executions = ExecutionsAPI()
 
     @property
     def storage_path(self):
