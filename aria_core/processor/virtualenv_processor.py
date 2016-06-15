@@ -16,10 +16,9 @@ import os
 import sys
 
 from virtualenvapi import manage
-from virtualenvapi import exceptions
 
 from aria_core import constants
-from aria_core import exceptions as aria_exceptions
+from aria_core import exceptions
 from aria_core import logger
 from aria_core import logger_config
 from aria_core import utils
@@ -27,7 +26,7 @@ from aria_core import utils
 from aria_core.dependencies import futures
 from aria_core.processor import blueprint_processor
 
-LOG = logger.get_logger('aria_cli.cli.main')
+LOG = logger.get_logger(__name__)
 
 
 def initialize_blueprint(blueprint_path,
@@ -66,18 +65,18 @@ def install_blueprint_plugins(blueprint_id, blueprint_path,
         if requirements:
             venv_path = utils.venv_path(blueprint_id,
                                         storage_path=storage_path)
-            venv = manage.VirtualEnvironment(
-                venv_path, python=default_python_interpreter)
-            venv.open_or_create()
-            for req in requirements:
-                if not venv.is_installed(req):
-                    try:
-                        venv.install(req)
-                        LOG.info("Installed dependency: {0}".format(req))
-                    except exceptions.PackageInstallationException:
-                        msg = 'Unable to install {0} dependency'.format(req)
-                        LOG.error(msg)
-                        raise aria_exceptions.AriaError(msg)
+            try:
+                venv = manage.VirtualEnvironment(
+                    venv_path, python=default_python_interpreter)
+                venv.open_or_create()
+                for req in requirements:
+                    if not venv.is_installed(req):
+                            venv.install(req)
+                            LOG.info("Installed dependency: {0}".format(req))
+            except BaseException as ex:
+                msg = 'Unable to install dependencies. {0}'.format(str(ex))
+                LOG.error(msg)
+                raise exceptions.AriaError(msg)
             LOG.info("Virtualenv {0} was used or created.".format(venv_path))
             return os.path.join(venv_path, 'lib', venv.python, 'site-packages')
         else:

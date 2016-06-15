@@ -17,23 +17,23 @@ from setuptools import setup
 
 setup(
     name='aria-core',
-    version='0.7',
+    version='0.8',
     author='Denys Makogon',
     author_email='Denys@gigaspaces.com',
     packages=[
         'aria_core',
         'aria_core.dependencies',
-        'aria_core.processor'
+        'aria_core.processor',
     ],
     license='LICENSE',
     description='ARIA CORE',
     install_requires=[
-        'aria-plugins-common==0.3',
-        'aria-dsl-parser==0.3',
+        'cloudify-plugins-common==3.4a4',
+        'cloudify-dsl-parser==3.4a4',
         'pyyaml==3.10',
         'jinja2==2.7.2',
         'virtualenv-api',
         'virtualenv',
-        'aria-script-plugin',  # Legacy dependency
+        'cloudify-script-plugin==1.4',  # Legacy dependency
     ]
 )
